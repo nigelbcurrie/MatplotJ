@@ -6,12 +6,9 @@
 
 package org.insolina.matplotj;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.CategorySeries;
@@ -19,10 +16,6 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.style.colors.XChartSeriesColors;
-import org.knowm.xchart.style.lines.SeriesLines;
-import org.knowm.xchart.style.markers.Marker;
-import org.knowm.xchart.style.markers.SeriesMarkers;
 
 /**
  *
@@ -76,21 +69,35 @@ public class Plotter {
     private XYChart chart;
     private CategoryChart histChart;
     
-    
-    
+    /**
+     * Default constructor. Sets title = "Title", xLabel = "X", and 
+     * yLabel = "Y".
+     */   
     public Plotter() {
     }
     
+    /**
+     * Constructor to set the title of the chart explicitly.
+     * 
+     * @param title - the title of the chart
+     */
     public Plotter(final String title) {
         this();
         this.title = title;
     }
     
-    public Plotter(final String title, final String xAxisLabel, final String yAxisLabel) {
+    /**
+     * Constructor to set the title, xLabel and yLabel of the chart explicitly.
+     * 
+     * @param title - the title of the chart
+     * @param xLabel - the x-axis label
+     * @param yLabel - the y-axis label
+     */
+    public Plotter(final String title, final String xLabel, final String yLabel) {
         this();
         this.title = title;
-        this.xAxisLabel = xAxisLabel;
-        this.yAxisLabel = yAxisLabel;
+        this.xAxisLabel = xLabel;
+        this.yAxisLabel = yLabel;
     }
     
     public void plot(final double[] xyData) {
@@ -110,6 +117,65 @@ public class Plotter {
         this.chartStyle = ChartStyle.LineChart;      
     }
     
+    /**
+     * Set the title of the chart
+     * 
+     * @param title - the title 
+     */
+    public void title(final String title) {
+        this.title = title;
+    }
+    
+    /**
+     * Set the x-axis label
+     * 
+     * @param xLabel - the x-axis label
+     */
+    public void xLabel(final String xLabel) {
+        this.xAxisLabel = xLabel;
+    }
+    
+    /**
+     * Set the y-axis label
+     * 
+     * @param yLabel - the y-axis label
+     */
+    public void yLabel(final String yLabel) {
+        this.yAxisLabel = yLabel;
+    }
+    
+    /**
+     * Set the width of the chart
+     * 
+     * @param width - the width of the chart
+     */
+    public void width(final int width) {
+        this.width = width;
+    }
+    
+    /**
+     * Set the height of the chart
+     * 
+     * @param height - the height of the chart
+     */
+    public void height(final int height) {
+        this.height = height;
+    }
+    
+    /**
+     * Save the chart to a file. The chart needs to be displayed on screen 
+     * when this method is called. 
+     * 
+     * @param filename - the file name
+     */
+    public void savefig(final String filename) {
+        try {
+            ChartImage.saveImage(chart, filename);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+    
     public void hist(final double[] xData, final double[] yData, final String fmt, final String seriesLegend) {
         this.xData = xData;
         this.yData = yData;
@@ -118,7 +184,7 @@ public class Plotter {
         this.chartStyle = ChartStyle.BarChart;       
     }
     
-    public void initialiseChart() {
+    private void initialiseChart() {
         if (chartStyle == ChartStyle.LineChart) {
             chart = new XYChartBuilder().width(width).height(height).theme(Styler.ChartTheme.Matlab).title(title).xAxisTitle(xAxisLabel).yAxisTitle(yAxisLabel).build();
             chart.getStyler().setXAxisTickMarkSpacingHint(100);
