@@ -61,7 +61,7 @@ public class Plotter {
     private int height = 320;
     private String styleFormatStr;
     private ChartStyle chartStyle;
-    private String legend;
+    private String histLegend;
     private double[] xData;
     private double[] yData;
     private List<Series> seriesList = new ArrayList<>();
@@ -108,12 +108,67 @@ public class Plotter {
         plot(xData, yData, null);
     }
     
-    public void plot(final double[] xData, final double[] yData, final String fmt) {
-        plot(xData, yData, fmt, null);
+    public void plot(final double[] xData, final double[] yData, final String seriesLegend) {
+        plot(xData, yData, seriesLegend, null);
     }
     
-    public void plot(final double[] xData, final double[] yData, final String fmt, final String seriesLegend) {
-        seriesList.add(new Series(xData, yData, fmt, (seriesLegend == null || seriesLegend.equals("")) ? " " : seriesLegend));
+    public void plot(final double[] xData, final double[] yData, final String seriesLegend, final String fmt) {
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
+        seriesList.add(new Series(xData, yData, fmt, legend));
+        this.chartStyle = ChartStyle.LineChart;      
+    }
+    
+    public void plot(final int[] xyData) {
+        plot(xyData, xyData);
+    }
+    
+    public void plot(final int[] xData, final int[] yData) {
+        plot(xData, yData, null);
+    }
+    
+    public void plot(final int[] xData, final int[] yData, final String seriesLegend) {
+        plot(xData, yData, seriesLegend, null);
+    }
+    
+    public void plot(final int[] xData, final int[] yData, final String seriesLegend, final String fmt) {
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
+        seriesList.add(new Series(xData, yData, fmt, legend));
+        this.chartStyle = ChartStyle.LineChart;      
+    }
+    
+    public void plot(final float[] xyData) {
+        plot(xyData, xyData);
+    }
+    
+    public void plot(final float[] xData, final float[] yData) {
+        plot(xData, yData, null);
+    }
+    
+    public void plot(final float[] xData, final float[] yData, final String seriesLegend) {
+        plot(xData, yData, seriesLegend, null);
+    }
+    
+    public void plot(final float[] xData, final float[] yData, final String seriesLegend, final String fmt) {
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
+        seriesList.add(new Series(xData, yData, fmt, legend));
+        this.chartStyle = ChartStyle.LineChart;      
+    }
+    
+    public void plot(final List<? extends Number> xyData) {
+        plot(xyData, xyData);
+    }
+    
+    public void plot(final List<?> xData, final List<? extends Number> yData) {
+        plot(xData, yData, null);
+    }
+    
+    public void plot(final List<?> xData, final List<? extends Number> yData, final String seriesLegend) {
+        plot(xData, yData, seriesLegend, null);
+    }
+    
+    public void plot(final List<?> xData, final List<? extends Number> yData, final String seriesLegend, final String fmt) {
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
+        seriesList.add(new Series(xData, yData, fmt, legend));
         this.chartStyle = ChartStyle.LineChart;      
     }
     
@@ -180,7 +235,7 @@ public class Plotter {
         this.xData = xData;
         this.yData = yData;
         this.styleFormatStr = fmt;
-        this.legend = (seriesLegend == null || seriesLegend.equals("")) ? " " : seriesLegend;
+        this.histLegend = (seriesLegend == null || seriesLegend.equals("")) ? " " : seriesLegend;
         this.chartStyle = ChartStyle.BarChart;       
     }
     
@@ -189,14 +244,18 @@ public class Plotter {
             chart = new XYChartBuilder().width(width).height(height).theme(Styler.ChartTheme.Matlab).title(title).xAxisTitle(xAxisLabel).yAxisTitle(yAxisLabel).build();
             chart.getStyler().setXAxisTickMarkSpacingHint(100);
             
-            for (Series s : seriesList) {
-                XYSeries series = chart.addSeries(s.legend, s.xData, s.yData);
+            int len = seriesList.size();
+            for (int i = 0; i < len; i++) {
+                Series s = seriesList.get(i);
+                XYSeries series = s.addSeriesToChart(chart);
 
-                StyleFormat fmt = StyleFormat.parseStyleFormatString(s.styleFormatStr);
-                series.setLineStyle(fmt.lineStyle);
-                series.setMarker(fmt.markerStyle);
-                series.setMarkerColor(fmt.colour);
-                series.setLineColor(fmt.colour);
+                if (series != null) {
+                    StyleFormat fmt = StyleFormat.getStyleFormat(i, s.styleFormatStr);
+                    series.setLineStyle(fmt.lineStyle);
+                    series.setMarker(fmt.markerStyle);
+                    series.setMarkerColor(fmt.colour);
+                    series.setLineColor(fmt.colour);
+                }
             }
             return;
         }
@@ -204,9 +263,9 @@ public class Plotter {
         if (chartStyle == ChartStyle.BarChart) {
             histChart = new CategoryChartBuilder().width(width).height(height).theme(Styler.ChartTheme.Matlab).title(title).xAxisTitle(xAxisLabel).yAxisTitle(yAxisLabel).build();
             histChart.getStyler().setHasAnnotations(true);
-            CategorySeries series = histChart.addSeries(legend, xData, yData);
+            CategorySeries series = histChart.addSeries(histLegend, xData, yData);
             
-            StyleFormat fmt = StyleFormat.parseStyleFormatString(styleFormatStr);
+            StyleFormat fmt = StyleFormat.getStyleFormat(0, styleFormatStr);
             series.setFillColor(fmt.colour); 
             return;
         }
@@ -229,16 +288,66 @@ public class Plotter {
     }
     
     static class Series {
-        public double[] xData;
-        public double[] yData;
+        public Object xData;
+        public Object yData;
         public String styleFormatStr;
         public String legend;
+        public SeriesType seriesType;
         
-        public Series(final double[] xData, final double[] yData, final String styleFormatStr, final String legend) {
-            this.xData = xData;
-            this.yData = yData;
+        enum SeriesType {
+            Double, Float, Int, List, None
+        }
+        
+        public Series(final String styleFormatStr, final String legend) {
+            seriesType = SeriesType.None;
             this.styleFormatStr = styleFormatStr;
             this.legend = legend;
+        }
+        
+        public Series(final double[] xData, final double[] yData, final String styleFormatStr, final String legend) {
+            this(styleFormatStr, legend);
+            seriesType = SeriesType.Double;
+            this.xData = xData;
+            this.yData = yData;           
+        }
+ 
+        public Series(final int[] xData, final int[] yData, final String styleFormatStr, final String legend) {
+            this(styleFormatStr, legend);
+            seriesType = SeriesType.Int;
+            this.xData = xData;
+            this.yData = yData;
+        }
+        
+        public Series(final float[] xData, final float[] yData, final String styleFormatStr, final String legend) {
+            this(styleFormatStr, legend);
+            seriesType = SeriesType.Float;
+            this.xData = xData;
+            this.yData = yData;
+        }
+        
+        public Series(final List<?> xData, final List<? extends Number> yData, final String styleFormatStr, final String legend) {
+            this(styleFormatStr, legend);
+            seriesType = SeriesType.List;
+            this.xData = xData;
+            this.yData = yData;
+        }
+        
+        public XYSeries addSeriesToChart(final XYChart chart) {
+            switch(seriesType) {
+                case Double:
+                    return chart.addSeries(legend, (double[]) xData, (double[]) yData);
+
+                case Float:
+                    return chart.addSeries(legend, (float[]) xData, (float[]) yData);
+                    
+                case Int:
+                    return chart.addSeries(legend, (int[]) xData, (int[]) yData);
+                    
+                case List:
+                    return chart.addSeries(legend, (List<?>) xData, (List<? extends Number>) yData);
+            }
+            
+            return null;
         }
     }
 }
