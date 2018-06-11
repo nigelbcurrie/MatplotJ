@@ -9,49 +9,23 @@ package org.insolina.matplotj;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.CategorySeries;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 
 /**
- *
- * @author Nigel Currie
+ * A utility to mimic the Matlab / Matplotlib plotting interface. 
  * 
- * see https://matplotlib.org/users/pyplot_tutorial.html for introduction to PyPlot
- * see https://knowm.org/open-source/xchart/xchart-example-code/ for XChart example code
- * see https://github.com/eseifert/gral/wiki/tutorial for tutorials on Gral
- * see http://www.jzy3d.org/ for a 3D plotting library
+ * A plot can be displayed in 3 lines:
  * 
- * The different charts supported by XChart:
- * 
- *      Bubble Chart (no equivalent)
- *      Category Chart (hist, bar)
- *      Dial Chart (no equivalent)
- *      OHLC Chart (a chart showing error ranges)
- *      Pie Chart (pie)
- *      Radar Chart (no equivalent)
- *      XY Chart (scatter, plot)
- * 
- *      Implement bar, hist, pie, plot and scatter.
- * 
- *      Histograms are used to show distributions of variables while bar charts are used to compare
- *      variables. Histograms plot quantitative data with ranges of the data grouped into bins or
- *      intervals while bar charts plot categorical data.
- * 
- * Next things to do:
- * 
- * 1. Support for multiple series
- * Would be best if we returned the XChart series object from the call to plot, etc., and 
- * provide support for getting the XChart chart object from the Plotter object, so that the user
- * can customise their charts.
- * 2. Support for the other chart types
- * 3. Support for multiple charts on the same window
- * 4. Methods to set the variables of the chart
- * 5. Overrides for setting the data, int arrays, Lists, etc.
+ * <pre>
+ * {@code
+ * Plotter plt = new Plotter();
+ * plt.plot(new double[] {1, 2, 3});
+ * plt.show();
+ * }
+ * </pre>
  */
 public class Plotter {
     private String title = "Title";
@@ -59,15 +33,10 @@ public class Plotter {
     private String yAxisLabel = "Y";
     private int width = 600;
     private int height = 320;
-    private String styleFormatStr;
     private ChartStyle chartStyle;
-    private String histLegend;
-    private double[] xData;
-    private double[] yData;
     private List<Series> seriesList = new ArrayList<>();
     
     private XYChart chart;
-    private CategoryChart histChart;
     
     /**
      * Default constructor. Sets title = "Title", xLabel = "X", and 
@@ -100,72 +69,184 @@ public class Plotter {
         this.yAxisLabel = yLabel;
     }
     
+    /**
+     * Plot an XYSeries using arrays of doubles for the x and y data. This method will define a default series legend 
+     * and a default format. The same data will be used for the x and y axis.
+     * 
+     * @param xyData - the xy data
+     */
     public void plot(final double[] xyData) {
         plot(xyData, xyData);
     }
     
+    /**
+     * Plot an XYSeries using arrays of doubles for the x and y data. This method will define a default series legend 
+     * and a default format.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     */
     public void plot(final double[] xData, final double[] yData) {
         plot(xData, yData, null);
     }
     
+    /**
+     * Plot an XYSeries using arrays of doubles for the x and y data. This method will define a default format. 
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     */
     public void plot(final double[] xData, final double[] yData, final String seriesLegend) {
         plot(xData, yData, seriesLegend, null);
     }
     
+    /**
+     * Plot an XYSeries using arrays of doubles for the x and y data.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     * @param fmt - the format for the plot as a Matlab format string
+     */
     public void plot(final double[] xData, final double[] yData, final String seriesLegend, final String fmt) {
         String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
         seriesList.add(new Series(xData, yData, fmt, legend));
         this.chartStyle = ChartStyle.LineChart;      
     }
     
+    /**
+     * Plot an XYSeries using arrays of ints for the x and y data. This method will define a default series legend 
+     * and a default format. The same data will be used for the x and y axis.
+     * 
+     * @param xyData - the xy data
+     */
     public void plot(final int[] xyData) {
         plot(xyData, xyData);
     }
     
+    /**
+     * Plot an XYSeries using arrays of ints for the x and y data. This method will define a default series legend 
+     * and a default format.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     */
     public void plot(final int[] xData, final int[] yData) {
         plot(xData, yData, null);
     }
     
+    /**
+     * Plot an XYSeries using arrays of ints for the x and y data. This method will define a default format. 
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     */
     public void plot(final int[] xData, final int[] yData, final String seriesLegend) {
         plot(xData, yData, seriesLegend, null);
     }
     
+    /**
+     * Plot an XYSeries using arrays of ints for the x and y data.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     * @param fmt - the format for the plot as a Matlab format string
+     */
     public void plot(final int[] xData, final int[] yData, final String seriesLegend, final String fmt) {
         String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
         seriesList.add(new Series(xData, yData, fmt, legend));
         this.chartStyle = ChartStyle.LineChart;      
     }
     
+    /**
+     * Plot an XYSeries using arrays of floats for the x and y data. This method will define a default series legend 
+     * and a default format. The same data will be used for the x and y axis.
+     * 
+     * @param xyData - the xy data
+     */
     public void plot(final float[] xyData) {
         plot(xyData, xyData);
     }
     
+    /**
+     * Plot an XYSeries using arrays of floats for the x and y data. This method will define a default series legend 
+     * and a default format.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     */
     public void plot(final float[] xData, final float[] yData) {
         plot(xData, yData, null);
     }
     
+    /**
+     * Plot an XYSeries using arrays of floats for the x and y data. This method will define a default format. 
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     */
     public void plot(final float[] xData, final float[] yData, final String seriesLegend) {
         plot(xData, yData, seriesLegend, null);
     }
     
+    /**
+     * Plot an XYSeries using arrays of floats for the x and y data.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     * @param fmt - the format for the plot as a Matlab format string
+     */
     public void plot(final float[] xData, final float[] yData, final String seriesLegend, final String fmt) {
         String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
         seriesList.add(new Series(xData, yData, fmt, legend));
         this.chartStyle = ChartStyle.LineChart;      
     }
     
+    /**
+     * Plot an XYSeries using lists for the x and y data. This method will define a default series legend 
+     * and a default format. The same data will be used for the x and y axis.
+     * 
+     * @param xyData - the xy data
+     */
     public void plot(final List<? extends Number> xyData) {
         plot(xyData, xyData);
     }
     
+    /**
+     * Plot an XYSeries using lists for the x and y data. This method will define a default series legend 
+     * and a default format.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     */
     public void plot(final List<?> xData, final List<? extends Number> yData) {
         plot(xData, yData, null);
     }
     
+    /**
+     * Plot an XYSeries using lists for the x and y data. This method will define a default format. 
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     */
     public void plot(final List<?> xData, final List<? extends Number> yData, final String seriesLegend) {
         plot(xData, yData, seriesLegend, null);
     }
     
+    /**
+     * Plot an XYSeries using lists for the x and y data.
+     * 
+     * @param xData - the x data
+     * @param yData - the y data
+     * @param seriesLegend - the series legend
+     * @param fmt - the format for the plot as a Matlab format string
+     */
     public void plot(final List<?> xData, final List<? extends Number> yData, final String seriesLegend, final String fmt) {
         String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
         seriesList.add(new Series(xData, yData, fmt, legend));
@@ -219,7 +300,8 @@ public class Plotter {
     
     /**
      * Save the chart to a file. The chart needs to be displayed on screen 
-     * when this method is called. 
+     * when this method is called, i.e. you need to call Plotter::show() 
+     * before you call Plotter::savefig(). 
      * 
      * @param filename - the file name
      */
@@ -230,15 +312,7 @@ public class Plotter {
             ioe.printStackTrace();
         }
     }
-    
-    public void hist(final double[] xData, final double[] yData, final String fmt, final String seriesLegend) {
-        this.xData = xData;
-        this.yData = yData;
-        this.styleFormatStr = fmt;
-        this.histLegend = (seriesLegend == null || seriesLegend.equals("")) ? " " : seriesLegend;
-        this.chartStyle = ChartStyle.BarChart;       
-    }
-    
+     
     private void initialiseChart() {
         if (chartStyle == ChartStyle.LineChart) {
             chart = new XYChartBuilder().width(width).height(height).theme(Styler.ChartTheme.Matlab).title(title).xAxisTitle(xAxisLabel).yAxisTitle(yAxisLabel).build();
@@ -259,27 +333,16 @@ public class Plotter {
             }
             return;
         }
-        
-        if (chartStyle == ChartStyle.BarChart) {
-            histChart = new CategoryChartBuilder().width(width).height(height).theme(Styler.ChartTheme.Matlab).title(title).xAxisTitle(xAxisLabel).yAxisTitle(yAxisLabel).build();
-            histChart.getStyler().setHasAnnotations(true);
-            CategorySeries series = histChart.addSeries(histLegend, xData, yData);
-            
-            StyleFormat fmt = StyleFormat.getStyleFormat(0, styleFormatStr);
-            series.setFillColor(fmt.colour); 
-            return;
-        }
     }
     
+    /**
+     * Display the plot.
+     */
     public void show() {
         initialiseChart();
         
         if (chart != null) {
             new XChartSwingWrapper<>(chart).displayChart();
-        }
-        
-        if (histChart != null) {
-            new XChartSwingWrapper<>(histChart).displayChart();
         }
     }
     
