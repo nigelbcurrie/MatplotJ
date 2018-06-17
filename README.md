@@ -43,7 +43,7 @@ plt.show();
  
 ## Plot Style
 
-The colour, line-style and marker-style of the plot will default to something sensible, and each time you call plot you'll get a new plot style by default. But if you want to set the style yourself, you can define it using the standard Matlab format string, where the first character defines the colour, the second character defines the marker style, and the final character(s) define the line-style. For example, the following code will create a red plot with upright triangular markers and a solid line:
+The colour, line-style and marker-style of the plot will default to something sensible, and each time you call plot you'll get a new plot style by default. But if you want to set the style yourself, you can define it using the standard Matlab format string, where the first character defines the colour, the second character defines the marker style, and the final character(s) defines the line-style. For example, the following code will create a red plot with upright triangular markers and a solid line:
 
 ```java
 Plotter plt = new Plotter();
