@@ -32,7 +32,7 @@ plt.ylabel("My Y-Axis Label");
 ...
 ```
  
-##Series Legends
+## Series Legends
 
 Each call to plot creates a new series on the chart, with a default legend of 'Series 1', 'Series 2', etc. If you want to specify the legend yourself, just pass that as a third parameter in the call to plot.
 
@@ -42,7 +42,7 @@ plt.plot(new double[] {1, 2, 3}, new double[] {1, 2, 3}, "My Series Legend");
 plt.show();
 ```
  
-##Plot Style
+## Plot Style
 
 The colour, line-style and marker-style of the plot will default to something sensible, and each time you call plot you'll get a new plot style by default. But if you want to set the style yourself, you can define it using the standard Matlab format string, where the first character defines the colour, the second character defines the marker style, and the final character(s) define the line-style. For example, the following code will create a red plot with upright triangular markers and a solid line:
 
@@ -54,9 +54,9 @@ plt.show();
 
 ![Example 3](/images/MatplotJ_Example3.jpg)
 
-##Supported Plot Styles
+## Supported Plot Styles
  
-###Colours
+### Colours
 
 Character|Colour 
 ---------|------
@@ -69,7 +69,7 @@ y|Yellow
 x|Black
 w|White
 
-###Marker Styles
+### Marker Styles
 
 Character|Marker Style
 ---------|------------
@@ -81,7 +81,7 @@ v|Upside-down triangle
 x|Cross
 +|Plus
 
-###Line Styles
+### Line Styles
 
 Characters|Line Style
 ----------|----------
@@ -90,7 +90,7 @@ Characters|Line Style
 -.|Dash Dot
  |No line
 
-##Saving the Chart
+## Saving the Chart
 
 The chart can be saved to an image file by calling savefig. The supported file formats are bmp, jpg, png and gif. Note that you need to call show before you call savefig because the image file is generated from the displayed chart.
 
@@ -101,7 +101,7 @@ plt.show();
 plt.savefig("MySampleChart.jpg");
 ``` 
  
-##An Example Chart with Multiple Series
+## An Example Chart with Multiple Series
 
 ```java
 int size = 30;
