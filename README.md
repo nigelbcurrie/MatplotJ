@@ -11,7 +11,7 @@ plt.plot(new double[] {1, 2, 3});
 plt.show();
 ```
 
-![Example 1](/images/MatplotJ_Example1.jpg)
+![Example 1](/images/MatplotJ_Example1.png)
 
 This being Java rather than Python, I've provided a constructor that allows you to define the title, the x-axis label and the y-axis label:
 
@@ -20,7 +20,7 @@ Plotter plt = new Plotter("My Chart Title", "My X-Axis Label", "My Y-Axis Label"
 ...
 ```
 
-![Example 2](/images/MatplotJ_Example2.jpg)
+![Example 2](/images/MatplotJ_Example2.png)
  
 But if you want to do it the Python way, you can do that too:
 
@@ -52,7 +52,7 @@ plt.plot(new double[] {1, 2, 3}, new double[] {1, 2, 3}, "My Series Legend", "r^
 plt.show();
 ``` 
 
-![Example 3](/images/MatplotJ_Example3.jpg)
+![Example 3](/images/MatplotJ_Example3.png)
 
 ## Supported Plot Styles
  
@@ -122,6 +122,6 @@ plt.plot(xData2, yData2, "cos(x)");
 plt.show();
 ```
 
-![Example 4](/images/MatplotJ_Example4.jpg)
+![Example 4](/images/MatplotJ_Example4.png)
 
  
