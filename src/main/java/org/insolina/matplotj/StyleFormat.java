@@ -9,7 +9,6 @@ package org.insolina.matplotj;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class StyleFormat {
     }
     
     public Color colour = XChartSeriesColors.BLUE;
-    public BasicStroke lineStyle = SeriesLines.SOLID;
+    public BasicStroke lineStyle = SeriesLines.NONE;
     public Marker markerStyle = SeriesMarkers.CIRCLE;
     
     public static StyleFormat getStyleFormat(final int index, final String fmt) {
