@@ -11,4 +11,4 @@ plt.plot(new double[] {1, 2, 3});
 plt.show();
 ```
 
-![Example 1](https://github.com/nigelbcurrie/MatplotJ/tree/master/images/MatplotJ_Example1.jpg Example 1)
+![Example 1](/images/MatplotJ_Example1.jpg)
