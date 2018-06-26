@@ -157,22 +157,20 @@ import org.knowm.xchart.style.Styler;
  * </pre>
  * 
  */
-public class Plotter {
-    private String title = "Title";
-    private String xAxisLabel = "X";
-    private String yAxisLabel = "Y";
-    private int width = 600;
-    private int height = 320;
-    private ChartStyle chartStyle;
-    private List<Series> seriesList = new ArrayList<>();
-    
-    private XYChart chart;
+public class Plotter {    
+    private List<Figure> figures = new ArrayList<>();
+    private Figure currentFigure;
+    private Chart currentChart;
     
     /**
      * Default constructor. Sets title = "Title", xLabel = "X", and 
      * yLabel = "Y".
      */   
     public Plotter() {
+        currentFigure = new Figure();
+        currentChart = new Chart();
+        figures.add(currentFigure);
+        currentFigure.addChart(currentChart);
     }
     
     /**
@@ -182,7 +180,7 @@ public class Plotter {
      */
     public Plotter(final String title) {
         this();
-        this.title = title;
+        currentChart.setTitle(title);
     }
     
     /**
@@ -194,9 +192,48 @@ public class Plotter {
      */
     public Plotter(final String title, final String xLabel, final String yLabel) {
         this();
-        this.title = title;
-        this.xAxisLabel = xLabel;
-        this.yAxisLabel = yLabel;
+        
+        currentChart.setTitle(title);
+        currentChart.setXAxisLabel(xLabel);
+        currentChart.setYAxisLabel(yLabel);
+    }
+    
+    /**
+     * Create a matrix of charts with the given number of rows and columns. Clears 
+     * any current matrix and initialises the Plotter at the first chart.
+     * 
+     * @param numRows - the number of rows to create
+     * @param numCols - the number of columns to create
+     */
+    public void subplots(final int numRows, final int numCols) {
+        currentFigure.rows(numRows);
+        currentFigure.cols(numCols);
+        
+        int numCharts = numRows * numCols;
+        currentFigure.clear();
+        for (int i = 0; i < numCharts; i++) {
+            Chart chart = new Chart();
+            currentFigure.addChart(chart);
+        }
+        
+        if (currentFigure.getCharts().size() > 0) {
+            currentChart = currentFigure.getCharts().get(0);
+        }
+    }
+    
+    /**
+     * Set the Plotter so that the chart at index 'index' in the matrix of charts
+     * is the current chart. Indexing starts at 1, and the matrix is read from left
+     * to right and top to bottom.
+     * 
+     * @param index - the index into the current matrix of charts
+     */
+    public void subplot(final int index) {
+        int actualIndex = index - 1;
+        
+        if (actualIndex >= 0 && actualIndex < currentFigure.getCharts().size()) {
+            currentChart = currentFigure.getCharts().get(actualIndex);
+        }
     }
     
     /**
@@ -240,9 +277,8 @@ public class Plotter {
      * @param fmt the format for the plot as a Matlab format string
      */
     public void plot(final double[] xData, final double[] yData, final String seriesLegend, final String fmt) {
-        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
-        seriesList.add(new Series(xData, yData, fmt, legend));
-        this.chartStyle = ChartStyle.LineChart;      
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (currentChart.seriesCount() + 1) : seriesLegend;
+        currentChart.addSeries(new Series(xData, yData, fmt, legend));      
     }
     
     /**
@@ -286,9 +322,8 @@ public class Plotter {
      * @param fmt the format for the plot as a Matlab format string
      */
     public void plot(final int[] xData, final int[] yData, final String seriesLegend, final String fmt) {
-        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
-        seriesList.add(new Series(xData, yData, fmt, legend));
-        this.chartStyle = ChartStyle.LineChart;      
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (currentChart.seriesCount() + 1) : seriesLegend;
+        currentChart.addSeries(new Series(xData, yData, fmt, legend));      
     }
     
     /**
@@ -332,9 +367,8 @@ public class Plotter {
      * @param fmt the format for the plot as a Matlab format string
      */
     public void plot(final float[] xData, final float[] yData, final String seriesLegend, final String fmt) {
-        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
-        seriesList.add(new Series(xData, yData, fmt, legend));
-        this.chartStyle = ChartStyle.LineChart;      
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (currentChart.seriesCount() + 1) : seriesLegend;
+        currentChart.addSeries(new Series(xData, yData, fmt, legend));     
     }
     
     /**
@@ -378,9 +412,8 @@ public class Plotter {
      * @param fmt the format for the plot as a Matlab format string
      */
     public void plot(final List<?> xData, final List<? extends Number> yData, final String seriesLegend, final String fmt) {
-        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (seriesList.size() + 1) : seriesLegend;
-        seriesList.add(new Series(xData, yData, fmt, legend));
-        this.chartStyle = ChartStyle.LineChart;      
+        String legend = (seriesLegend == null || seriesLegend.equals("")) ? "Series " + (currentChart.seriesCount() + 1) : seriesLegend;
+        currentChart.addSeries(new Series(xData, yData, fmt, legend));      
     }
     
     /**
@@ -389,7 +422,7 @@ public class Plotter {
      * @param title the title 
      */
     public void title(final String title) {
-        this.title = title;
+        currentChart.setTitle(title);
     }
     
     /**
@@ -398,7 +431,7 @@ public class Plotter {
      * @param xLabel the x-axis label
      */
     public void xlabel(final String xLabel) {
-        this.xAxisLabel = xLabel;
+        currentChart.setXAxisLabel(xLabel);
     }
     
     /**
@@ -407,7 +440,7 @@ public class Plotter {
      * @param yLabel the y-axis label
      */
     public void ylabel(final String yLabel) {
-        this.yAxisLabel = yLabel;
+        currentChart.setYAxisLabel(yLabel);
     }
     
     /**
@@ -416,7 +449,7 @@ public class Plotter {
      * @param width the width of the chart
      */
     public void width(final int width) {
-        this.width = width;
+        currentChart.setWidth(width);
     }
     
     /**
@@ -425,7 +458,7 @@ public class Plotter {
      * @param height the height of the chart
      */
     public void height(final int height) {
-        this.height = height;
+        currentChart.setHeight(height);
     }
     
     /**
@@ -436,111 +469,14 @@ public class Plotter {
      * @param filename the file name
      */
     public void savefig(final String filename) {
-        try {
-            ChartImage.saveImage(chart, filename);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-     
-    private void initialiseChart() {
-        if (chartStyle == ChartStyle.LineChart) {
-            chart = new XYChartBuilder().width(width).height(height).theme(Styler.ChartTheme.Matlab).title(title).xAxisTitle(xAxisLabel).yAxisTitle(yAxisLabel).build();
-            chart.getStyler().setXAxisTickMarkSpacingHint(100);
-            
-            int len = seriesList.size();
-            for (int i = 0; i < len; i++) {
-                Series s = seriesList.get(i);
-                XYSeries series = s.addSeriesToChart(chart);
-
-                if (series != null) {
-                    StyleFormat fmt = StyleFormat.getStyleFormat(i, s.styleFormatStr);
-                    series.setLineStyle(fmt.lineStyle);
-                    series.setMarker(fmt.markerStyle);
-                    series.setMarkerColor(fmt.colour);
-                    series.setLineColor(fmt.colour);
-                }
-            }
-            return;
-        }
+        currentFigure.saveFigure(filename);
     }
     
     /**
      * Display the plot.
      */
     public void show() {
-        initialiseChart();
-        
-        if (chart != null) {
-            new XChartSwingWrapper<>(chart).displayChart();
-        }
-    }
-    
-    enum ChartStyle {
-        LineChart, BarChart
-    }
-    
-    static class Series {
-        public Object xData;
-        public Object yData;
-        public String styleFormatStr;
-        public String legend;
-        public SeriesType seriesType;
-        
-        enum SeriesType {
-            Double, Float, Int, List, None
-        }
-        
-        public Series(final String styleFormatStr, final String legend) {
-            seriesType = SeriesType.None;
-            this.styleFormatStr = styleFormatStr;
-            this.legend = legend;
-        }
-        
-        public Series(final double[] xData, final double[] yData, final String styleFormatStr, final String legend) {
-            this(styleFormatStr, legend);
-            seriesType = SeriesType.Double;
-            this.xData = xData;
-            this.yData = yData;           
-        }
- 
-        public Series(final int[] xData, final int[] yData, final String styleFormatStr, final String legend) {
-            this(styleFormatStr, legend);
-            seriesType = SeriesType.Int;
-            this.xData = xData;
-            this.yData = yData;
-        }
-        
-        public Series(final float[] xData, final float[] yData, final String styleFormatStr, final String legend) {
-            this(styleFormatStr, legend);
-            seriesType = SeriesType.Float;
-            this.xData = xData;
-            this.yData = yData;
-        }
-        
-        public Series(final List<?> xData, final List<? extends Number> yData, final String styleFormatStr, final String legend) {
-            this(styleFormatStr, legend);
-            seriesType = SeriesType.List;
-            this.xData = xData;
-            this.yData = yData;
-        }
-        
-        public XYSeries addSeriesToChart(final XYChart chart) {
-            switch(seriesType) {
-                case Double:
-                    return chart.addSeries(legend, (double[]) xData, (double[]) yData);
-
-                case Float:
-                    return chart.addSeries(legend, (float[]) xData, (float[]) yData);
-                    
-                case Int:
-                    return chart.addSeries(legend, (int[]) xData, (int[]) yData);
-                    
-                case List:
-                    return chart.addSeries(legend, (List<?>) xData, (List<? extends Number>) yData);
-            }
-            
-            return null;
-        }
+        // TODO: Iterate through all figures, displaying each one in turn
+        currentFigure.show();
     }
 }

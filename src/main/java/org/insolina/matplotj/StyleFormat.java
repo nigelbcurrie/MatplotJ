@@ -66,7 +66,7 @@ public class StyleFormat {
     
     public Color colour = XChartSeriesColors.BLUE;
     public BasicStroke lineStyle = SeriesLines.NONE;
-    public Marker markerStyle = SeriesMarkers.CIRCLE;
+    public Marker markerStyle = SeriesMarkers.NONE;
     
     public static StyleFormat getStyleFormat(final int index, final String fmt) {
         if (fmt == null) {
