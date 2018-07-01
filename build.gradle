@@ -25,9 +25,12 @@ dependencies {
 }
 
 javadoc {
-    exclude 'org/insolina/matplotj/ChartImage.java'
-    exclude 'org/insolina/matplotj/StyleFormat.java'
-    exclude 'org/insolina/matplotj/XChartSwingWrapper.java'
+    include 'org/insolina/matplotj/Plotter.java'
+    //exclude 'org/insolina/matplotj/StyleFormat.java'
+    //exclude 'org/insolina/matplotj/XChartSwingWrapper.java'
+    //exclude 'org/insolina/matplotj/Chart.java'
+    //exclude 'org/insolina/matplotj/Series.java'
+    //exclude 'org/insolina/matplotj/Figure.java'
 }
 
 // In this section you declare where to find the dependencies of your project

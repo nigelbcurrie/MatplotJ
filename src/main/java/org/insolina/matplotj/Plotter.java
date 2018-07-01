@@ -156,6 +156,36 @@ import org.knowm.xchart.style.Styler;
  * }
  * </pre>
  * 
+ * <strong>Multiple Charts (subplots)</strong>
+ * 
+ * To create multiple charts on a single figure, use subplots(rows, cols), to set up the 
+ * matrix of charts, then call subplot(index) to position the plotter on the chart you want 
+ * to add data to. Note that indexing starts at 1, and the matrix is traversed from left to right
+ * and top to bottom. 
+ * 
+ * Those familiar will matlab/matplotlib will notice that I've diverged from the interface here. But I 
+ * find the matlab api for subplots overly complex, so I've decided not to copy it slavishly.
+ * 
+ * <pre>
+ * {@code
+ * Plotter plt = new Plotter();
+ * plt.subplots(2, 2);
+ *       
+ * for (int i = 1; i <= 4; i++) {
+ *      double[] x = getConsecutiveValues(200);
+ *      double[] y1 = getRandomWalk(200);
+ *      double[] y2 = getRandomWalk(200);
+ *           
+ *      plt.subplot(i);
+ *      plt.title("Title " + i).xlabel("X Label " + i).ylabel("YLabel " + i);
+ *      plt.plot(x, y1, "Series A" + i, "b-");
+ *      plt.plot(x, y2, "Series B" + i, "r-");
+ * }
+ *       
+ * plt.show();
+ * }
+ * </pre>
+ * 
  */
 public class Plotter {    
     private List<Figure> figures = new ArrayList<>();
@@ -223,7 +253,7 @@ public class Plotter {
     
     /**
      * Set the Plotter so that the chart at index 'index' in the matrix of charts
-     * is the current chart. Indexing starts at 1, and the matrix is read from left
+     * becomes the current chart. Indexing starts at 1, and the matrix is read from left
      * to right and top to bottom.
      * 
      * @param index - the index into the current matrix of charts
@@ -420,45 +450,55 @@ public class Plotter {
      * Set the title of the chart
      * 
      * @param title the title 
+     * @return this Plotter
      */
-    public void title(final String title) {
+    public Plotter title(final String title) {
         currentChart.setTitle(title);
+        return this;
     }
     
     /**
      * Set the x-axis label
      * 
      * @param xLabel the x-axis label
+     * @return this Plotter
      */
-    public void xlabel(final String xLabel) {
+    public Plotter xlabel(final String xLabel) {
         currentChart.setXAxisLabel(xLabel);
+        return this;
     }
     
     /**
      * Set the y-axis label
      * 
      * @param yLabel the y-axis label
+     * @return this Plotter
      */
-    public void ylabel(final String yLabel) {
+    public Plotter ylabel(final String yLabel) {
         currentChart.setYAxisLabel(yLabel);
+        return this;
     }
     
     /**
      * Set the width of the chart
      * 
      * @param width the width of the chart
+     * @return this Plotter
      */
-    public void width(final int width) {
+    public Plotter width(final int width) {
         currentChart.setWidth(width);
+        return this;
     }
     
     /**
      * Set the height of the chart
      * 
      * @param height the height of the chart
+     * @return this Plotter
      */
-    public void height(final int height) {
+    public Plotter height(final int height) {
         currentChart.setHeight(height);
+        return this;
     }
     
     /**
